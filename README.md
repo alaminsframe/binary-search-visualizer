@@ -4,7 +4,7 @@ This is a simple project that visually demonstrates how the **Binary Search** al
 
 ## 📖 About the Project
 
-While learning the Binary Search algorithm, I initially struggled to fully understand how it iterates through a sorted array. After watching a few tutorials, I realized that visualizing the process could make the concept clearer. So, using my frontend skills, I built this visualization tool to help others (and myself) grasp how binary search works step-by-step.
+While learning the Binary Search algorithm, I initially struggled to understand how it iterates through a sorted array fully. After watching a few tutorials, I realized that visualizing the process could make the concept clearer. So, using my Tailwind and JS skills, I built this binary search visualization project through Vibe Coding.
 
 ## 🛠️ Technologies Used
 
