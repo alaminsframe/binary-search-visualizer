@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Binary Search Visualizer</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        animation: {
+                            'pulse-fast': 'pulse 0.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        }
+                    }
+                }
+            }
+        </script>
+    </head>
+    <body class="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white p-4">
+        <div class="max-w-6xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
+                    Binary Search Visualizer
+                </h1>
+                <p class="text-gray-400">Watch how binary search finds values in a sorted array</p>
+            </div>
+
+            <!-- Main Container -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Controls and Array Section -->
+                <div class="lg:col-span-2 bg-gray-800 rounded-xl shadow-2xl p-6 space-y-8 border border-gray-700">
+                    <!-- Controls -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-300">Array Size (5-30)</label>
+                            <input 
+                                type="range" 
+                                id="arraySize" 
+                                min="5" 
+                                max="30" 
+                                value="15"
+                                class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                            >
+                            <div class="text-center text-sm text-gray-400">
+                                Size: <span id="arraySizeValue">15</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-300">Target Value (0-99)</label>
+                            <input 
+                                type="number" 
+                                id="targetValue" 
+                                min="0" 
+                                max="99" 
+                                value="50"
+                                class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="flex flex-wrap gap-4 justify-center">
+                        <button 
+                            id="newArrayBtn"
+                            class="px-6 py-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg font-medium hover:from-blue-600 hover:to-blue-700 transform hover:scale-105 transition-all shadow-lg"
+                        >
+                            🔄 New Array
+                        </button>
+                        <button 
+                            id="stepBtn"
+                            class="px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 rounded-lg font-medium hover:from-green-600 hover:to-green-700 transform hover:scale-105 transition-all shadow-lg"
+                        >
+                            👣 Step
+                        </button>
+                        <button 
+                            id="completeBtn"
+                            class="px-6 py-3 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg font-medium hover:from-purple-600 hover:to-purple-700 transform hover:scale-105 transition-all shadow-lg"
+                        >
+                            ⚡ Complete
+                        </button>
+                    </div>
+
+                    <!-- Array Visualization -->
+                    <div id="arrayContainer" class="flex flex-wrap justify-center gap-2 min-h-[100px] p-4 bg-gray-900 rounded-xl"></div>
+
+                    <!-- Status -->
+                    <div class="space-y-8 text-center">
+                        <div class="flex justify-center gap-8">
+                            <div class="px-4 py-2 bg-gray-700 rounded-lg">
+                                Steps: <span id="stepCount" class="font-bold text-blue-400">0</span>
+                            </div>
+                            <div class="px-4 py-2 bg-gray-700 rounded-lg">
+                                Comparisons: <span id="comparisonCount" class="font-bold text-purple-400">0</span>
+                            </div>
+                        </div>
+                        <p id="result" class="text-2xl font-medium text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-green-500 animate-bounce"></p>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="flex flex-wrap justify-center gap-4 text-sm">
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 bg-blue-500 rounded"></div>
+                            <span class="text-gray-400">Search Range</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 bg-yellow-500 rounded"></div>
+                            <span class="text-gray-400">Current Element</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 bg-green-500 rounded"></div>
+                            <span class="text-gray-400">Found</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 bg-red-500 rounded"></div>
+                            <span class="text-gray-400">Eliminated</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step Explanation Section -->
+                 <div class="h-screen flex flex-col gap-4">
+                    <div class="bg-gray-800 h-1/2 overflow-y-auto rounded-xl shadow-2xl p-6 border border-gray-700">
+                        <h2 class="text-xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
+                            Step-by-Step Explanation
+                        </h2>
+                        <div id="explanationContainer" class="space-y-4 h-[500px] pr-4">
+                            <!-- Explanations will be added here -->
+                        </div>
+                    </div>
+                    <!-- Badic Explanation Section -->
+                    <div class="bg-gray-800 h-1/2 overflow-y-auto rounded-xl shadow-2xl p-6 text-gray-200 relative">
+                        <h2 class="text-2xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
+                            Understanding Binary Search
+                        </h2>
+                        <p class="mb-4">
+                            Binary search is an efficient algorithm for finding an item from a sorted list. Instead of checking every element one by one like in linear search, binary search starts by comparing the target value with the middle element of the list. If the target value is smaller than the middle element, the search is restricted to the left half of the list; if it is larger, the search continues in the right half. This process is repeated, reducing the search range by half each time, until the target value is found or the range is empty.
+                        </p>
+                        <h3 class="font-semibold mb-2">How It Works:</h3>
+                        <p class="mb-4">
+                            1. Start by considering the entire sorted array as the search space.
+                            <br>
+                            2. Find the middle element of the array and compare it to the target value.
+                            <br>
+                            3. If the middle element is equal to the target value, the search is complete.
+                            <br>
+                            4. If the target value is less than the middle element, repeat the search on the left half of the array.
+                            <br>
+                            5. If the target value is greater than the middle element, repeat the search on the right half of the array.
+                            <br>
+                            6. Continue this process until you find the target value or the search space is empty (which means the target is not in the array).
+                        </p>
+                        <h3 class="font-semibold mb-2">Why Is Binary Search Efficient?</h3>
+                        <p class="mb-4">
+                            Binary search is much faster than linear search because it cuts the search space in half with each comparison. While linear search checks each element one by one, binary search eliminates half of the remaining elements in each step, making it highly efficient for large datasets. The time complexity of binary search is O(log n), meaning that even with a large number of elements, the search will be completed quickly.
+                        </p>
+                        <h3 class="font-semibold mb-2">Key Points:</h3>
+                        <ul class="list-disc pl-5 mb-4">
+                            <li>Binary search requires the array to be sorted.</li>
+                            <li>It compares the middle element with the target value and eliminates half of the search space each time.</li>
+                            <li>Time complexity: O(log n), making it much faster than linear search for large datasets.</li>
+                            <li>Binary search is widely used in many applications, such as searching through databases or finding specific values in large collections of data.</li>
+                        </ul>
+                        <h3 class="font-semibold mb-2">Resources for Further Reading:</h3>
+                        <ul class="list-none pl-5 mb-4">
+                            <li><a href="https://en.wikipedia.org/wiki/Binary_search_algorithm" class="text-blue-400 hover:underline">Wikipedia: Binary Search Algorithm</a></li>
+                            <li><a href="https://www.geeksforgeeks.org/binary-search/" class="text-blue-400 hover:underline">GeeksforGeeks: Binary Search</a></li>
+                            <li><a href="https://www.youtube.com/results?search_query=binary+search" class="text-blue-400 hover:underline">YouTube: Binary Search Explained</a></li>
+                        </ul>
+                        <!-- Full Screen Button (SVG) -->
+                        <button id="fullscreenBtn" class="absolute top-4 right-4 p-2 bg-blue-500 rounded-lg text-white hover:bg-blue-600 focus:outline-none">
+                            <!-- Full Screen Icon (SVG) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 448 512" class="h-5 w-5">
+                                <path d="M32 32C14.3 32 0 46.3 0 64l0 96c0 17.7 14.3 32 32 32s32-14.3 32-32l0-64 64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L32 32zM64 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 96c0 17.7 14.3 32 32 32l96 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0 0-64zM320 32c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0 0 64c0 17.7 14.3 32 32 32s32-14.3 32-32l0-96c0-17.7-14.3-32-32-32l-96 0zM448 352c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 64-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l96 0c17.7 0 32-14.3 32-32l0-96z"/>
+                            </svg>
+                            <!-- Cross (Exit) Icon (SVG) -->
+                            <svg id="exitFullscreenIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6 hidden">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                 </div>
+
+            </div>
+        </div>
+
+        <script src="script.js"></script>
+    </body>
+</html>
